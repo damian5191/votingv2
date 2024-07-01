@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voting System</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script type="text/javascript">
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        function startTimer() {
+            socket.emit('start_timer');
+        }
+
+        socket.on('update_timer', function(data) {
+            document.getElementById('timer').textContent = data.time;
+        });
+
+        socket.on('timer_complete', function() {
+            var messageDiv = document.getElementById("timer");
+            messageDiv.innerHTML = "Time out";
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Enter Your Phrase</h1>
+        <form id="phrase-form" method="post" action="/">
+            <input id="phrase-input" type="text" name="phrase" placeholder="Enter your phrase" required>
+            <button id="submit-btn" type="submit">Submit</button>
+        </form>
+        <div id="timer"></div>
+        <div id="message"></div>
+    </div>
+</body>
+</html>

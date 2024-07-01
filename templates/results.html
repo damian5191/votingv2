@@ -1,0 +1,129 @@
+<!-- results.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script type="text/javascript">
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        function startTimer() {
+            socket.emit('start_timer');
+        }
+
+        socket.on('update_timer', function(data) {
+            document.getElementById('timer').textContent = data.time;
+        });
+
+        socket.on('timer_complete', function() {
+            var messageDiv = document.getElementById("timer");
+            messageDiv.innerHTML = "Time out";
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .results-container {
+            width: 80%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        .reset-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .reset-button button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .reset-button button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="results-container">
+        <h1 style="text-align: center;">Results</h1>
+
+        <div>
+            <h2>Phrase Frequencies</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phrase</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for phrase, count in sorted_phrases %}
+                    <tr>
+                        <td>{{ phrase }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="reset-button">
+            <form method="POST" action="{{ url_for('results') }}">
+                <button type="submit">Reset Submissions</button>
+            </form>
+            <form action="/timer" method="post">
+                <label for="time_limit">Limit czasu (w sekundach):</label>
+                <input type="number" id="time_limit" name="time_limit" required>
+                <button type="submit">Ustaw limit czasu</button>
+            </form>
+            <button onclick="startTimer()">Start Timer</button>
+            <div id="timer"></div>
+        </div>
+
+    </div>
+</body>
+</html>
