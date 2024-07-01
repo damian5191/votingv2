@@ -1,0 +1,5 @@
+Zmiana wyglądu index
+zmiana wyglądu results
+testy na więcej ludzi
+przycisk odświeżenia tabeli
+eksport do excela wyników
